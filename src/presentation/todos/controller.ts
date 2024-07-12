@@ -19,7 +19,7 @@ export class TodosController {
   public getTodoById = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' })
-    const todo = prisma.todo.findFirst({ where: { id } })
+    const todo = await prisma.todo.findFirst({ where: { id } })
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' })
     }
