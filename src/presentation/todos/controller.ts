@@ -22,4 +22,12 @@ export class TodosController {
     }
     return res.json(todo)
   }
+
+  public createTodo = (req: Request, res: Response) => {
+    const { text, done } = req.body
+    if (!text) return res.status(400).json({ error: 'Text property is required' })
+    const newTodo = { id: todos.length + 1, text, done: done || false }
+    todos.push(newTodo)
+    return res.status(201).json(newTodo)
+  }
 }
