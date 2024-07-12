@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 
 const todos = [
-  { id: 1, text: 'Buy milk', done: false },
-  { id: 2, text: 'Buy eggs', done: true },
-  { id: 3, text: 'Buy bread', done: false }
+  { id: 1, text: 'Buy milk', completedAt: new Date() },
+  { id: 2, text: 'Buy eggs', completedAt: null },
+  { id: 3, text: 'Buy bread', completedAt: new Date() }
 ]
 
 export class TodosController {
@@ -24,10 +24,24 @@ export class TodosController {
   }
 
   public createTodo = (req: Request, res: Response) => {
-    const { text, done } = req.body
+    const { text, completedAt } = req.body
     if (!text) return res.status(400).json({ error: 'Text property is required' })
-    const newTodo = { id: todos.length + 1, text, done: done || false }
+    const newTodo = { id: todos.length + 1, text, completedAt: null }
     todos.push(newTodo)
     return res.status(201).json(newTodo)
+  }
+
+  public updateTodo = (req: Request, res: Response) => {
+    const id = Number(req.params.id)
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' })
+    const { text, completedAt } = req.body
+    if (!text) return res.status(400).json({ error: 'Text property is required' })
+    const todo = todos.find((todo) => todo.id === id)
+    if (!todo) {
+      return res.status(404).json({ error: 'Todo not found' })
+    }
+    todo.text = text || todo.text
+    todo.completedAt = completedAt === null ? null : (todo.completedAt = new Date(completedAt ?? todo.completedAt))
+    return res.json(todo)
   }
 }

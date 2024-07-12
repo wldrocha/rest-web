@@ -9,6 +9,7 @@ export class TodoRoutes {
     router.get('/', todosController.getTodos)
     router.get('/:id', todosController.getTodoById)
     router.post('/', todosController.createTodo)
+    router.put('/:id', todosController.updateTodo)
 
     return router
   }
