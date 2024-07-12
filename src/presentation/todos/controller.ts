@@ -37,18 +37,23 @@ export class TodosController {
     return res.status(201).json(newTodo)
   }
 
-  public updateTodo = (req: Request, res: Response) => {
+  public updateTodo = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' })
     const { text, completedAt } = req.body
     if (!text) return res.status(400).json({ error: 'Text property is required' })
-    const todo = todos.find((todo) => todo.id === id)
+    // const todo = todos.find((todo) => todo.id === id)
+    const todo = await prisma.todo.findFirst({ where: { id } })
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' })
     }
     todo.text = text || todo.text
     todo.completedAt = completedAt === null ? null : (todo.completedAt = new Date(completedAt ?? todo.completedAt))
-    return res.json(todo)
+    const updatedTodo = await prisma.todo.update({
+      where: { id },
+      data: { text: todo.text, completedAt: todo.completedAt }
+    })
+    return res.json(updatedTodo)
   }
 
   public deleteTodo = (req: Request, res: Response) => {
