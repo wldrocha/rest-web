@@ -22,9 +22,10 @@ export class Server {
 
   async start() {
     // middleware or functions that execute when the server receives a request
+    this.app.use(express.json()) // parse application/json
+    this.app.use(express.urlencoded({ extended: true })) // parse application/x-www-form-urlencoded
 
     // Routes
-
     this.app.use(this.routes)
 
     //  SPA
