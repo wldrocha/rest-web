@@ -12,14 +12,14 @@ export class TodosController {
 
   public getTodos = async (req: Request, res: Response) => {
     const todos = await prisma.todo.findMany()
-    if(todos.length < 1) return res.status(404).json({ error: 'No todos found' })
+    if (todos.length < 1) return res.status(404).json({ error: 'No todos found' })
     return res.json(todos)
   }
 
-  public getTodoById = (req: Request, res: Response) => {
+  public getTodoById = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' })
-    const todo = todos.find((todo) => todo.id === id)
+    const todo = prisma.todo.findFirst({ where: { id } })
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' })
     }
