@@ -42,7 +42,6 @@ export class TodosController {
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' })
     const { text, completedAt } = req.body
     if (!text) return res.status(400).json({ error: 'Text property is required' })
-    // const todo = todos.find((todo) => todo.id === id)
     const todo = await prisma.todo.findFirst({ where: { id } })
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' })
@@ -56,14 +55,15 @@ export class TodosController {
     return res.json(updatedTodo)
   }
 
-  public deleteTodo = (req: Request, res: Response) => {
+  public deleteTodo = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid id' })
-    const todo = todos.find((todo) => todo.id === id)
+    // const todo = await todos.find((todo) => todo.id === id)
+    const todo = await prisma.todo.findFirst({ where: { id } })
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' })
     }
-    todos.splice(todos.indexOf(todo), 1)
+    await prisma.todo.delete({ where: { id } })
     return res.status(200).send(todo)
   }
 }
