@@ -46,11 +46,10 @@ export class TodosController {
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' })
     }
-    todo.text = text || todo.text
-    todo.completedAt = completedAt === null ? null : (todo.completedAt = new Date(completedAt ?? todo.completedAt))
+
     const updatedTodo = await prisma.todo.update({
       where: { id },
-      data: { text: todo.text, completedAt: todo.completedAt }
+      data: { text: text, completedAt }
     })
     return res.json(updatedTodo)
   }
