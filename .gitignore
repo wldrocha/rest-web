@@ -4,6 +4,5 @@
 /mongo*
 /postgres*
 /dist
-.env*
 /coverage
 .env
