@@ -9,8 +9,8 @@ interface Options {
 }
 
 export class Server {
-  private app = express()
-
+  public app = express()
+  private serverLister?: any
   private readonly port: number
   private readonly publicPath: string
   private readonly routes: Router
@@ -25,7 +25,7 @@ export class Server {
     // middleware or functions that execute when the server receives a request
     this.app.use(express.json()) // parse application/json
     this.app.use(express.urlencoded({ extended: true })) // parse application/x-www-form-urlencoded
-    this.app.use(compresion())// compress all responses
+    this.app.use(compresion()) // compress all responses
 
     // Routes
     this.app.use(this.routes)
@@ -38,6 +38,10 @@ export class Server {
       res.sendFile(indexPath)
     })
 
-    this.app.listen(this.port, () => console.log(`Server running at http://localhost:${this.port}`))
+    this.serverLister = this.app.listen(this.port, () => console.log(`Server running at http://localhost:${this.port}`))
+  }
+
+  public close() {
+    this.serverLister?.close()
   }
 }
