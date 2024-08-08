@@ -70,4 +70,17 @@ describe('Todo route testing', () => {
 
     expect(body).toEqual({ error: expect.any(String) })
   })
+
+  test('should to update a todo api/todos/:id', async () => {
+    const todo = await prisma.todo.create({ data: todo1 })
+
+    const updateTodo = { text: 'updated todo', completedAt: '2024-08-08' }
+
+    const { body } = await request(testServer.app).put(`/api/todos/${todo.id}`).send(updateTodo).expect(200)
+    expect(body).toEqual({
+      id: todo.id,
+      text: updateTodo.text,
+      completedAt: `${updateTodo.completedAt}T00:00:00.000Z`
+    })
+  })
 })
