@@ -49,4 +49,25 @@ describe('Todo route testing', () => {
 
     expect(body).toEqual({ error: `Todo with id ${todoId} not found` })
   })
+
+  test('should return a new TODO api/todos', async () => {
+    const { body } = await request(testServer.app).post('/api/todos').send(todo1).expect(201)
+    expect(body).toEqual({
+      id: expect.any(Number),
+      text: todo1.text,
+      completedAt: undefined
+    })
+  })
+
+  test('should return an error if text not present api/todos', async () => {
+    const { body } = await request(testServer.app).post('/api/todos').send({}).expect(400)
+
+    expect(body).toEqual({ error: expect.any(String) })
+  })
+
+  test('should return an error if text is empty api/todos', async () => {
+    const { body } = await request(testServer.app).post('/api/todos').send({ text: '' }).expect(400)
+
+    expect(body).toEqual({ error: expect.any(String) })
+  })
 })
