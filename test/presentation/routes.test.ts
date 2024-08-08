@@ -11,10 +11,13 @@ describe('Todo route testing', () => {
     testServer.close()
   })
 
+  beforeEach(async () => {
+    await prisma.todo.deleteMany()
+  })
   const todo1 = { text: 'todo 1' }
   const todo2 = { text: 'todo 2' }
+
   test('should return TODOS api/todos', async () => {
-    await prisma.todo.deleteMany()
     await prisma.todo.createMany({
       data: [todo1, todo2]
     })
@@ -28,5 +31,14 @@ describe('Todo route testing', () => {
     expect(body[0].completedAt).toBeUndefined()
   })
 
+  test('should return TODO  api/todo/:id', async () => {
+    const todo = await prisma.todo.create({ data: todo1 })
 
+    const { body } = await request(testServer.app).get(`/api/todos/${todo.id}`).expect(200)
+    expect(body).toEqual({
+      id: todo.id,
+      text: todo.text,
+      completedAt: undefined
+    })
+  })
 })
