@@ -41,4 +41,12 @@ describe('Todo route testing', () => {
       completedAt: undefined
     })
   })
+
+  test('should not return a 404 not found TODO api/todo/:id', async () => {
+    const todoId = 0
+
+    const { body } = await request(testServer.app).get(`/api/todos/${todoId}`).expect(400)
+
+    expect(body).toEqual({ error: `Todo with id ${todoId} not found` })
+  })
 })
