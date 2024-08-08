@@ -17,6 +17,8 @@ describe('Todo route testing', () => {
   const todo1 = { text: 'todo 1' }
   const todo2 = { text: 'todo 2' }
 
+  const todoIdNotExist = 0
+
   test('should return TODOS api/todos', async () => {
     await prisma.todo.createMany({
       data: [todo1, todo2]
@@ -43,11 +45,9 @@ describe('Todo route testing', () => {
   })
 
   test('should not return a 404 not found TODO api/todo/:id', async () => {
-    const todoId = 0
+    const { body } = await request(testServer.app).get(`/api/todos/${todoIdNotExist}`).expect(400)
 
-    const { body } = await request(testServer.app).get(`/api/todos/${todoId}`).expect(400)
-
-    expect(body).toEqual({ error: `Todo with id ${todoId} not found` })
+    expect(body).toEqual({ error: `Todo with id ${todoIdNotExist} not found` })
   })
 
   test('should return a new TODO api/todos', async () => {
@@ -81,6 +81,33 @@ describe('Todo route testing', () => {
       id: todo.id,
       text: updateTodo.text,
       completedAt: `${updateTodo.completedAt}T00:00:00.000Z`
+    })
+  })
+
+  test('should return 404 api/todos/:id', async () => {
+    const { body } = await request(testServer.app).put(`/api/todos/${todoIdNotExist}`).send({}).expect(400)
+    expect(body).toEqual({ error: expect.any(String) })
+  })
+
+  test('should return an updated TODO only the date api/todos/:id', async () => {
+    const todo = await prisma.todo.create({ data: todo1 })
+    const updateTodo = { completedAt: '2024-08-08' }
+    const { body } = await request(testServer.app).put(`/api/todos/${todo.id}`).send(updateTodo).expect(200)
+    expect(body).toEqual({
+      id: todo.id,
+      text: todo.text,
+      completedAt: `${updateTodo.completedAt}T00:00:00.000Z`
+    })
+  })
+
+  test('should return an updated TODO only the text api/todos/:id', async () => {
+    const todo = await prisma.todo.create({ data: todo1 })
+    const updateTodo = { text: 'updated todo' }
+    const { body } = await request(testServer.app).put(`/api/todos/${todo.id}`).send(updateTodo).expect(200)
+    expect(body).toEqual({
+      id: todo.id,
+      text: updateTodo.text,
+      completedAt: undefined
     })
   })
 })

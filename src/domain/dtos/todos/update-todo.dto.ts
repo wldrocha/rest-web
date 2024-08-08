@@ -10,7 +10,6 @@ export class UpdateTodoDto {
   }
   static create(props: { [key: string]: any }): [string?, UpdateTodoDto?] {
     const { id, text, completedAt } = props
-    console.log("🚀 ~ UpdateTodoDto ~ create ~ id, text, completedAt:", id, text, completedAt)
     let newCompletedAt = completedAt
 
     if (!id || isNaN(id)) return ['id must be a valid number', undefined]
