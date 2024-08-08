@@ -9,7 +9,7 @@ interface Options {
 }
 
 export class Server {
-  public app = express()
+  public readonly app = express()
   private serverLister?: any
   private readonly port: number
   private readonly publicPath: string
