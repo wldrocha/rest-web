@@ -12,11 +12,11 @@ export class UpdateTodoDto {
     const { id, text, completedAt } = props
     let newCompletedAt = completedAt
 
-    if (!id || isNaN(id)) return ['id must be a valid number', undefined]
+    if (!id || isNaN(id)) return ['id must be a valid number']
 
     if (completedAt) {
       newCompletedAt = new Date(completedAt)
-      if (newCompletedAt.toString() === 'Invalid Date') return ['Invalid completedAt date', undefined]
+      if (newCompletedAt.toString() === 'Invalid Date') return ['Invalid completedAt date']
     }
 
     return [undefined, new UpdateTodoDto(id, text, newCompletedAt)]

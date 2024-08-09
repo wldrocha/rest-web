@@ -2,13 +2,6 @@ import { Request, Response } from 'express'
 import { prisma } from '../../data'
 import { CreateTodoDto, UpdateTodoDto } from '../../domain/dtos'
 import { CreateTodo, CustomError, DeleteTodo, GetTodo, GetTodos, TodoRepository, UpdateTodo } from '../../domain'
-import { error } from 'console'
-
-const todos = [
-  { id: 1, text: 'Buy milk', completedAt: new Date() },
-  { id: 2, text: 'Buy eggs', completedAt: null },
-  { id: 3, text: 'Buy bread', completedAt: new Date() }
-]
 
 export class TodosController {
   constructor(private readonly todoRepository: TodoRepository) {}
