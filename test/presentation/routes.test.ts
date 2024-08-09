@@ -45,7 +45,7 @@ describe('Todo route testing', () => {
   })
 
   test('should not return a 404 not found TODO api/todo/:id', async () => {
-    const { body } = await request(testServer.app).get(`/api/todos/${todoIdNotExist}`).expect(400)
+    const { body } = await request(testServer.app).get(`/api/todos/${todoIdNotExist}`).expect(404)
 
     expect(body).toEqual({ error: `Todo with id ${todoIdNotExist} not found` })
   })
@@ -85,7 +85,8 @@ describe('Todo route testing', () => {
   })
 
   test('should return 404 api/todos/:id', async () => {
-    const { body } = await request(testServer.app).put(`/api/todos/${todoIdNotExist}`).send({}).expect(400)
+    const { body } = await request(testServer.app).put(`/api/todos/${todoIdNotExist}`).send({}).expect(404)
+  
     expect(body).toEqual({ error: expect.any(String) })
   })
 
@@ -124,7 +125,7 @@ describe('Todo route testing', () => {
   })
 
   test('should return 404 if todo do not exist api/todos/:id', async () => {
-    const { body } = await request(testServer.app).delete(`/api/todos/${todoIdNotExist}`).expect(400)
+    const { body } = await request(testServer.app).delete(`/api/todos/${todoIdNotExist}`).expect(404)
 
     expect(body).toEqual({ error: `Todo with id ${todoIdNotExist} not found` })
   })
