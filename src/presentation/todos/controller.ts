@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { prisma } from '../../data'
 import { CreateTodoDto, UpdateTodoDto } from '../../domain/dtos'
-import { CreateTodo, DeleteTodo, GetTodo, GetTodos, TodoRepository, UpdateTodo } from '../../domain'
+import { CreateTodo, CustomError, DeleteTodo, GetTodo, GetTodos, TodoRepository, UpdateTodo } from '../../domain'
 
 const todos = [
   { id: 1, text: 'Buy milk', completedAt: new Date() },
@@ -24,7 +24,7 @@ export class TodosController {
     new GetTodo(this.todoRepository)
       .execute(id)
       .then((todo) => res.json(todo))
-      .catch((error) => res.status(400).json({ error }))
+      .catch((error: CustomError) => res.status(error.statusCode).json({ error: error.message }))
   }
 
   public createTodo = async (req: Request, res: Response) => {
